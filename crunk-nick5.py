@@ -30,6 +30,14 @@ def q2(x, t, d_task):
     return amp * np.cos(phase) + (amp * np.sin(phase))*1j
 
 
+def q0(x, d_task):
+    Ag = d_task["Ag"]
+    Bg = d_task["Bg"]
+    Cg = d_task["Cg"]
+    return q2(x, 0, d_task) + Ag * np.exp(-((x - Bg) ** 2) / Cg ** 2)
+
+
+
 def main(d_config):
     # Параметры задачи
     alpha = d_config["alpha"]
@@ -67,7 +75,7 @@ def main(d_config):
     xs, ts = np.meshgrid(x, t)
     #qs = np.zeros((nt, nx))
     qs = [[None] * nx for i in range(nt)]
-    qs[0] = [q2(x[i], 0, d_config) + Ag * np.exp(-((x[i] - Bg) ** 2) / Cg ** 2) for i in range(nx)]
+    qs[0] = [q0(x[i], d_config) for i in range(nx)]
     qs = np.array(qs)
     #matrix = np.zeros((nx, nx))
     matrix = [[0j] * nx for i in range(nx)]
